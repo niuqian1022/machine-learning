@@ -40,7 +40,9 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        self.epsilon = self.epsilon * math.exp(-0.05) 
+        
+        #self.epsilon = self.epsilon - 0.05
+        self.epsilon = self.epsilon * math.exp(-0.005) 
         # Tolerance = 0.025 for to be able to start training at ~35 trails.
         
         if testing:
@@ -68,10 +70,9 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
         
         # Set 'state' as a tuple of relevant data for the agent        
-        state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'])
-
+        #state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'])
+        state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
         return state
-
 
     def get_maxQ(self, state):
         """ The get_maxQ function is called when the agent is asked to find the
@@ -143,7 +144,8 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-        self.Q[state][action] += reward * self.alpha
+        if self.learning:
+            self.Q[state][action] = self.Q[state][action] + self.alpha*(reward - self.Q[state][action])  
         
         return
 
